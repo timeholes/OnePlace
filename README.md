@@ -12,12 +12,14 @@
 
 ### Установка / Installation
 
-> npm install
+```
+npm install
+```
 
 ### Настройка / Setup
 Откройте config.json / Open config.json
-
-> {
+```
+ {
   "steem": {
     "host": "localhost",
     "port": 80
@@ -27,10 +29,11 @@
     "port": 80
   }
 }
-
+```
 Пропишите адреса и порты для нод Стима и Голоса. / Edit hosts and ports for Steem and Golos nodes.
 
 ### Запуск / Run
-> npm start
-
+```
+npm start
+```
 Откройте в браузере localhost:8090 / Open localhost:8090 in the browser
