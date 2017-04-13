@@ -1,0 +1,21 @@
+<div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div one-page-nav items="ctrl.tags"></div>
+  </div>
+  <!-- /Sidebar -->
+
+  <!-- Main content -->
+  <section class="main-content">
+    <section ng-repeat="tag in ctrl.tags" class="tag-block" id="{{tag.name}}">
+      <header class="tag-block__header container">
+        <h1 class="h1 tag-block__headline" ng-bind="(tag.name | golos )"></h1>
+      </header>
+      <div ng-hide="tag.posts_loaded" class="tag-block__spinner">
+        <div class="container"><img src="img/spinner.gif" style=""></div>
+      </div>
+      <tag-block tag="tag"></tag-block>
+    </section>
+  </section>
+  <!-- /Main content -->
+</div>

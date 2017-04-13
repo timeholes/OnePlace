@@ -1,0 +1,10 @@
+{
+  "steem": {
+    "host": "localhost",
+    "port": 80
+  },
+  "golos": {
+    "host": "localhost",
+    "port": 80
+  }
+}
