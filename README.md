@@ -31,6 +31,13 @@ npm install
 }
 ```
 Пропишите адреса и порты для нод Стима и Голоса. / Edit hosts and ports for Steem and Golos nodes.
+Например: / Example:
+```
+"golos": {
+    "host": "node.golos.ws",
+    "port": 80
+  }
+```
 
 ### Запуск / Run
 ```
