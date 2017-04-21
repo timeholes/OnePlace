@@ -8,11 +8,11 @@
         $('.sidebar').removeClass('sidebar-opened');
       });
 
-      $('.sidebar').swipe({
-        swipeLeft: function (event, direction, distance, duration, fingerCount) {
-          $('.sidebar').removeClass('sidebar-opened');
-        }
-      });
+//      $('.sidebar__nav').swipe({
+//        swipeLeft: function (event, direction, distance, duration, fingerCount) {
+//          $('.sidebar').removeClass('sidebar-opened');
+//        }
+//      });
 
       function getDocHeight() {
         var D = document;

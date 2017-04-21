@@ -30,13 +30,13 @@
     }
 
     service.convertDate = function (time) {
-      var minutes = Math.floor(time / 60000);
-      var hours = Math.floor(minutes / 60);
+      var minutes = Math.ceil(time / 60000);
+      var hours = (minutes < 60) ? Math.floor(minutes / 60) : Math.round(minutes / 60);
       var days = Math.floor(hours / 24);
 
       var timePeriod = {
-        count: "1",
-        period: "M1"
+        count: "",
+        period: ""
       };
 
       if (days > 1) {

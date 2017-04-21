@@ -74,6 +74,7 @@ function preparePosts(media, recent, posts, callback) {
       postdata.posted = Date.now() - Date.parse(post.created);
       postdata.author = post.author;
       postdata.author_url = URL_PREFIX[media] + '/@' + post.author;
+      postdata.nsfw = checkTags(media, post.json_metadata);
       if (recent) {
         return postdata
       };
@@ -99,6 +100,34 @@ function preparePosts(media, recent, posts, callback) {
     });
     loadAvatars(media, posts, callback);
   });
+}
+
+function checkTags(media, metadata) {
+
+  if (metadata.length == 0) {
+    return false;
+  }
+
+  var object = JSON.parse(metadata);
+
+  if (!object.tags) {
+    return false;
+  }
+
+  if (object.tags.indexOf("18+") != -1) {
+    console.log(object.tags.indexOf("18+"));
+    return '18+';
+  }
+
+  if (object.tags.indexOf("ru--mat") != -1) {
+    return 'мат';
+  }
+
+  if (object.tags.indexOf("nsfw") != -1) {
+    return 'nsfw';
+  }
+
+  return false;
 }
 
 function setImage(media, metadata) {
@@ -165,7 +194,7 @@ function getTrending(media, hash, limit, callback) {
       return;
     }
     if (posts.length == 0) {
-      steem[media].call('get_discussions_by_trending30', [{
+      steem[media].call('get_discussions_by_hot', [{
         tag: hash,
         limit: limit
       }], function (err, posts) {
@@ -177,6 +206,7 @@ function getTrending(media, hash, limit, callback) {
         if (posts.length == 0) {
           log.warn('FUUUUUUUUUUUUUUU ' + hash);
         }
+        log.info('Loading hot ' + hash + ' takes ' + moment().diff(start, 'milliseconds') + ' millis');
         preparePosts(media, false, posts, callback);
       });
       return;

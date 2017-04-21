@@ -23,8 +23,9 @@
     C4: ' comments',
     RECENT_POSTS: 'Recent posts',
     NO_POSTS: 'No posts in this category.',
+    NSFW: 'Image is hidden',
     COPYRIGHT: 'Created by ',
-    LICENSE: 'All code is open-source under '
+    LICENSE: 'All code is open-source under the MIT license.'
   };
 
   var translations_ru = {
@@ -49,18 +50,19 @@
     C4: ' ответов',
     RECENT_POSTS: 'Последние записи',
     NO_POSTS: 'Нет записей в этой категории.',
+    NSFW: 'Изображение скрыто',
     COPYRIGHT: 'Создано ',
-    LICENSE: 'Код распространяется по лицензии '
+    LICENSE: 'Код распространяется по лицензии MIT.'
   };
 
   angular.module('oneplace', ['ui.router', 'pascalprecht.translate', 'ngCookies', 'ngSanitize'])
-    .constant("DEFAULT_TAGS", {
-      steem: ["art", "bitcoin"],
-      golos: ["ru--golos", "ru--zhiznx", "ru--fotografiya", "ru--iskusstvo", "ru--tvorchestvo", "ru--obrazovanie", "ru--blokcheijn", "ru--statistika", "ru--stikhi", "ru--otkrytyij-kod", "ru--znakomstvo", "ru--yekonomika", "ru--konkurs", "ru--puteshestviya", "ru--istoriya", "ru--programmirovanie", "ru--priklyucheniya", "ru--mysli", "ru--priroda", "ru--nauka"]
-    })
     .constant("TAGS", {
-      steem: ["art", "bitcoin"],
-      golos: ["ru--golos", "ru--zhiznx", "ru--fotografiya", "ru--iskusstvo", "ru--tvorchestvo", "ru--obrazovanie", "ru--blokcheijn", "ru--statistika", "ru--stikhi", "ru--otkrytyij-kod", "ru--znakomstvo", "ru--yekonomika", "ru--konkurs", "ru--puteshestviya", "ru--istoriya", "ru--programmirovanie", "ru--priklyucheniya", "ru--mysli", "ru--priroda", "ru--nauka"]
+      steem: ["steemit", "life", "photography", "art", "bitcoin", "travel", "story", "money", "introduceyourself", "food", "blockchain",
+              "news", "philosophy", "science", "health", "funny", "nature", "politics", "music", "video"],
+      golos: ["ru--golos", "ru--zhiznx", "ru--fotografiya", "ru--iskusstvo", "ru--tvorchestvo", "ru--obrazovanie",
+              "ru--blokcheijn", "ru--statistika", "ru--stikhi", "ru--otkrytyij-kod", "ru--znakomstvo", "ru--yekonomika",
+              "ru--konkurs", "ru--puteshestviya", "ru--istoriya", "ru--programmirovanie", "ru--priklyucheniya", "ru--mysli",
+              "ru--priroda", "ru--nauka"]
     })
     .config(config);
 
@@ -75,23 +77,24 @@
     $stateProvider
       .state('home', {
         url: '/',
-        templateUrl: 'templates/home.html',
-        controllerAs:"ctrl",
-        controller: 'HomeController'
+        templateUrl: 'templates/home.html'
       })
 
-    .state('usertags', {
-      url: '/golos/{userTagsList}',
-      templateUrl: 'templates/home.html',
-      controllerAs:"ctrl",
-      controller: 'HomeController'
+    .state('golostags', {
+      url: '/golos/{golosTagsList}',
+      templateUrl: 'templates/home.html'
+    })
+
+    .state('steemtags', {
+      url: '/steem/{steemTagsList}',
+      templateUrl: 'templates/home.html'
     });
 
     // Translations
 
     $translateProvider.translations('en', translations_en);
     $translateProvider.translations('ru', translations_ru);
-    $translateProvider.preferredLanguage("ru");
+    $translateProvider.preferredLanguage('en');
     $translateProvider.useCookieStorage();
     $translateProvider.useSanitizeValueStrategy('sanitize');
   }

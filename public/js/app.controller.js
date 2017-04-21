@@ -17,10 +17,10 @@
     app.setLanguage = $translate.use;
     app.getLanguage = $translate.use;
 
-    app.media = $cookies.get('media') ? 'golos' : 'golos';
+//    app.media = $cookies.get('media') ? $cookies.get('media') : 'golos';
 
-    $rootScope.$on('chainSwitch', function (event, data) {
-      app.media = ($cookies.get('media'));
+    $rootScope.$on('chainSet', function (event, data) {
+      app.media = $cookies.get('media');
     });
 
     app.setMedia = function (media) {

@@ -4,32 +4,34 @@
   angular.module('oneplace')
     .controller('HomeController', HomeController);
 
-  HomeController.$inject = ['$http', 'GetPostsService', '$cookies', 'DEFAULT_TAGS', '$rootScope', '$scope', '$stateParams', 'ungolosFilter'];
+  HomeController.$inject = ['$http', 'GetPostsService', '$cookies', 'TAGS', '$rootScope', '$scope', '$stateParams', 'ungolosFilter'];
 
-  function HomeController($http, GetPostsService, $cookies, DEFAULT_TAGS, $rootScope, $scope, $stateParams, ungolosFilter) {
+  function HomeController($http, GetPostsService, $cookies, TAGS, $rootScope, $scope, $stateParams, ungolosFilter) {
     var ctrl = this;
-    var TAGS = {golos:[]};
+
     ctrl.reloadData = function (media) {
-      $cookies.put('media', media);
       ctrl.media = media;
       loadData();
     };
 
-    if ($stateParams.userTagsList) {
-      var rawtags = $stateParams.userTagsList.split(',');  
-      TAGS['golos'] = rawtags.map(function(tag) {return ungolosFilter(tag)});
-      console.log(TAGS['golos']);
-      ctrl.reloadData('golos');
-    } else {
-      TAGS['golos'] = DEFAULT_TAGS['golos'];
-      if (!$cookies.get('media')) {
-        $cookies.put('media', 'golos');
-      }
-      ctrl.media = $cookies.get('media') ? $cookies.get('media') : 'golos';
-      ctrl.tags = TAGS[ctrl.media];
-    };
+    if ($cookies.get('golos')) {TAGS['golos'] = $cookies.get('golos').split(',').map(function(tag) {return ungolosFilter(tag)})}
 
-    console.log(ctrl.tags);
+    if ($cookies.get('steem')) {TAGS['steem'] = $cookies.get('steem').split(',').map(function(tag) {return ungolosFilter(tag)})}
+
+    if ($stateParams.golosTagsList || $stateParams.steemTagsList) {
+
+      ctrl.media = $stateParams.golosTagsList ? 'golos' : 'steem';
+      $cookies.put('media', ctrl.media);
+      $rootScope.$broadcast('chainSet');
+
+      var alltags = $stateParams.golosTagsList ? $stateParams.golosTagsList : $stateParams.steemTagsList;
+      TAGS[ctrl.media] = alltags.split(',').map(function(tag) {return ungolosFilter(tag)});
+      $cookies.put(ctrl.media, TAGS[ctrl.media]);
+    } else {
+      ctrl.media = $cookies.get('media') ? $cookies.get('media') : 'steem';
+      $cookies.put('media', ctrl.media);
+      $rootScope.$broadcast('chainSet');
+    };
 
     $scope.rendered = true;
 
@@ -37,10 +39,19 @@
       ctrl.reloadData($cookies.get('media'));
     });
 
-
-    $rootScope.$on('chainSwitch', function (event, data) {
+    var chainWatcher = $rootScope.$on('chainSwitch', function (event, data) {
       ctrl.reloadData($cookies.get('media'));
     });
+
+    $scope.$on('$destroy', function() {
+        chainWatcher();
+    });
+
+/*     $rootScope.$on('chainSwitch', function (event, data) {
+      ctrl.reloadData($cookies.get('media'));
+      $rootScope.counter++;
+      console.log($rootScope.counter);
+    }); */
 
     function intTags() {
       ctrl.tags = TAGS[ctrl.media].map(function (tag) {
@@ -49,9 +60,10 @@
           posts: []
         }
       });
+
     }
 
-    function loadTrandingTag(n, media, next) {
+    function loadTrendingTag(n, media, next) {
       return function () {
         ctrl.tags[n].posts_loaded = false;
         $http.get('/api/' + ctrl.media + '/trending/' + TAGS[ctrl.media][n]).success(function (response) {
@@ -108,7 +120,7 @@
           fn.pop()();
         }));
 
-        fn.push(loadTrandingTag(i, ctrl.media, function () {
+        fn.push(loadTrendingTag(i, ctrl.media, function () {
           fn.pop()();
         }));
       }

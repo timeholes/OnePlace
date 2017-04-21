@@ -20,7 +20,7 @@
   <script src="lib/angular-translate-2.7.2/angular-translate.min.js"></script>
   <script src="lib/angular-translate-2.7.2/angular-translate-storage-cookie.min.js"></script>
   <script src="lib/angular-translate-2.7.2/angular-translate-loader-static-files.min.js"></script>
-  <script src="lib/jquery.touchSwipe.min.js"></script>
+<!--  <script src="lib/jquery.touchSwipe.min.js"></script>-->
 
   <!--scripts-->
   <script src="js/oneplace.module.js"></script>
@@ -52,8 +52,8 @@
         <div class="header__chain-switch">
           <span translate="BLOCKCHAIN"></span><br>
           <div class="header__chain-wrapper">
-            <div class="header__chain header__chain-steem" ng-class="{'header__chain--active':app.media == 'steem'}" title="Steem" ng-click="$event.preventDefault();"></div>
-            <div class="header__chain header__chain-golos" ng-class="{'header__chain--active':app.media == 'golos'}" title="Golos" ng-click="$event.preventDefault();"></div>
+            <a href="#" class="header__chain header__chain-steem" ng-class="{'header__chain--active':app.media == 'steem'}" title="Steem" ng-click="$event.preventDefault(); app.setMedia('steem')"></a>
+            <a href="#" class="header__chain header__chain-golos" ng-class="{'header__chain--active':app.media == 'golos'}" title="Golos" ng-click="$event.preventDefault(); app.setMedia('golos')"></a>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
       <div class="container footer__wrapper">
         <div class="footer__license">
           <span translate="COPYRIGHT"></span><a href="{{app.link[app.media]}}/@oneplace.media" target="_blank">@oneplace.media</a><span>, 2017.</span>
-          <br><span translate="LICENSE"></span><a href="http://unlicense.org/" target="_blank">The&nbsp;Unlicense</a><span>.</span>
+          <br><span translate="LICENSE"></span>
         </div>
         <div class="footer__lang-switch">
           <span translate="CHOOSE_LANG"></span><br>
