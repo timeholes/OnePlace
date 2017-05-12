@@ -4,11 +4,11 @@
   angular.module('oneplace')
     .controller('HomeController', HomeController);
 
-  HomeController.$inject = ['$http', 'GetPostsService', '$cookies', 'TAGS', '$rootScope', '$scope', '$stateParams', 'ungolosFilter'];
+  HomeController.$inject = ['$http', 'GetPostsService', '$cookies', 'TAGS', '$rootScope', '$scope', '$stateParams', 'ungolosFilter','uuid2'];
 
-  function HomeController($http, GetPostsService, $cookies, TAGS, $rootScope, $scope, $stateParams, ungolosFilter) {
+  function HomeController($http, GetPostsService, $cookies, TAGS, $rootScope, $scope, $stateParams, ungolosFilter, uuid2) {
     var ctrl = this;
-
+    
     ctrl.reloadData = function (media) {
       ctrl.media = media;
       loadData();
@@ -47,12 +47,6 @@
         chainWatcher();
     });
 
-/*     $rootScope.$on('chainSwitch', function (event, data) {
-      ctrl.reloadData($cookies.get('media'));
-      $rootScope.counter++;
-      console.log($rootScope.counter);
-    }); */
-
     function intTags() {
       ctrl.tags = TAGS[ctrl.media].map(function (tag) {
         return {
@@ -63,10 +57,10 @@
 
     }
 
-    function loadTrendingTag(n, media, next) {
+    function loadTrendingTag(n, media, guid, next) {
       return function () {
         ctrl.tags[n].posts_loaded = false;
-        $http.get('/api/' + ctrl.media + '/trending/' + TAGS[ctrl.media][n]).success(function (response) {
+        $http.get('/api/' + ctrl.media + '/trending/' + TAGS[ctrl.media][n] + '/' + guid).success(function (response) {
           setTimeout(function () {
             if (media != ctrl.media) {
               return;
@@ -110,17 +104,23 @@
 
     function done() {
       //DO here what we needed
+      $http({
+        method: 'delete',
+        url: '/api/cache/' + ctrl.guid
+      });
     }
 
     function loadData() {
       intTags();
+      ctrl.guid = uuid2.newuuid();
+      console.log(ctrl.guid);
       var fn = [done];
       for (var i = TAGS[ctrl.media].length - 1; i > -1; i--) {
         fn.push(loadRecentTag(i, ctrl.media, function () {
           fn.pop()();
         }));
 
-        fn.push(loadTrendingTag(i, ctrl.media, function () {
+        fn.push(loadTrendingTag(i, ctrl.media, ctrl.guid, function () {
           fn.pop()();
         }));
       }

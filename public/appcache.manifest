@@ -1,0 +1,30 @@
+CACHE MANIFEST
+
+CACHE:
+/css/styles.min.css
+/lib/jquery.min.js
+/lib/jquery.nav.min.js
+/lib/angular-1.5.8/angular.min.js
+/lib/angular-1.5.8/angular-cookies.min.js
+/lib/angular-1.5.8/angular-sanitize.min.js
+/lib/angular-ui-router.min.js
+/lib/angular-translate-2.7.2/angular-translate.min.js
+/lib/angular-translate-2.7.2/angular-translate-storage-cookie.min.js /lib/angular-translate-2.7.2/angular-translate-loader-static-files.min.js
+/js/all.min.js
+/img/favicon.ico
+/img/logo.svg
+/img/steem.svg
+/img/golos.svg
+/templates/home.html
+/img/spinner.gif
+/img/nav-toggle.png
+/templates/tag-block.html
+/fonts/notosans-regular.woff2
+/fonts/notosans-bold.woff2
+/fonts/notoserif-regular.woff2
+/fonts/notoserif-bold.woff2
+/fonts/pts75f.woff2
+
+NETWORK:
+*
+

@@ -1,11 +1,13 @@
 var config = require('../config.json');
 var rpc = require('json-rpc2');
-var markdown = require('markdown');
+var Remarkable = require('remarkable');
+var md = new Remarkable();
 var decoder = require('html-entities').AllHtmlEntities;
 var utils = require('./utils');
 var he = require('he');
 var gold = require('./gold.service');
 var moment = require('moment');
+var async = require('async');
 
 var log4js = require('log4js');
 log4js.loadAppender('file');
@@ -86,7 +88,7 @@ function preparePosts(media, recent, posts, callback) {
       postdata.preview = '';
       if (post.body) {
         var preview = post.body.replace(/<[^>]+>/gm, '');
-        preview = decoder.decode(markdown.parse(preview)).replace(/<[^>]+>/gm, '');
+        preview = decoder.decode(md.render(preview)).replace(/<[^>]+>/gm, '');
         preview = he.decode(preview);
         preview = utils.cutLinks(preview, PREVIEW_LENGTH).substring(0, PREVIEW_LENGTH);
         if (preview.length == PREVIEW_LENGTH) {
@@ -115,7 +117,6 @@ function checkTags(media, metadata) {
   }
 
   if (object.tags.indexOf("18+") != -1) {
-    console.log(object.tags.indexOf("18+"));
     return '18+';
   }
 
@@ -139,7 +140,11 @@ function setImage(media, metadata) {
   if (!object.image && object.images) {
     object.image = object.images
   }
-
+  
+  if (object.image && (typeof object.image[0] === 'undefined')) {
+    return DEFAULT_IMG[media];
+  }
+  
   return (object.image) ? IMG_PREFIX[media] + '/640x400/' + object.image[0] : DEFAULT_IMG[media];
 }
 
@@ -182,55 +187,132 @@ function loadAvatars(media, posts, callback) {
 
 }
 
-function getTrending(media, hash, limit, callback) {
-  var start = moment();
-  steem[media].call('get_discussions_by_trending', [{
-    tag: hash,
-    limit: limit
-  }], function (err, posts) {
-    if (err) {
-      log.error("Something went wrong with", media, err);
-      getTrending(media, hash, limit, callback);
-      return;
-    }
-    if (posts.length == 0) {
-      steem[media].call('get_discussions_by_hot', [{
-        tag: hash,
-        limit: limit
-      }], function (err, posts) {
-        if (err) {
-          log.error("Something went wrong with", media, err);
-          getTrending(media, hash, limit, callback);
-          return;
+const TRENDING_TAG_SIZE = 3;
+var postsCache = {};
+
+function removeDuplicates(guid, posts, limit) {
+
+  var filtered = posts.filter(function(post) {
+    return postsCache[guid].indexOf(post.id) < 0;
+  });
+
+  if (filtered.length > limit) {
+    filtered = filtered.slice(0, limit);
+  }
+
+  postsCache[guid] = postsCache[guid].concat(filtered.map(function(post) {return post.id;} ));
+
+  return filtered;
+}
+
+function deleteCache(guid) {
+  delete postsCache[guid];
+}
+
+function getTrending(media, guid, tag, limit, callback) {
+  console.log(guid);
+  if (!postsCache[guid]) {
+    postsCache[guid] = [];
+  }
+  getPosts(media, 'get_discussions_by_trending', guid, tag, limit, function(err, posts) {
+    if(err && err.notEnoughPosts) {
+      getPosts(media, 'get_discussions_by_hot', guid, tag, limit, function(err, posts) {
+        if(err && err.notEnoughPosts) {
+          log.warn('Not enough posts for: ' + tag);
+        } else {
+          callback(err, posts);
         }
-        if (posts.length == 0) {
-          log.warn('FUUUUUUUUUUUUUUU ' + hash);
-        }
-        log.info('Loading hot ' + hash + ' takes ' + moment().diff(start, 'milliseconds') + ' millis');
-        preparePosts(media, false, posts, callback);
       });
-      return;
+    } else {
+      callback(err, posts);
     }
-    log.info('Loading trending ' + hash + ' takes ' + moment().diff(start, 'milliseconds') + ' millis');
-    preparePosts(media, false, posts, callback);
   });
 }
 
-function getRecent(media, hash, limit, callback) {
-  var start = moment();
-  steem[media].call('get_discussions_by_created', [{
-    tag: hash,
+function getPosts(media, method, guid, tag, limit, callback) {
+  steem[media].call(method, [{
+    tag: tag,
     limit: limit
   }], function (err, posts) {
     if (err) {
       log.error("Something went wrong with", media, err);
-      getRecent(media, hash, limit, callback);
+      getPosts(media, method, guid, tag, limit, callback);
       return;
     }
-    log.info('Loading recent ' + hash + ' takes ' + moment().diff(start, 'milliseconds') + ' millis');
+    if (posts.length == 0) {
+      callback({notEnoughPosts: true});
+      return;
+    }
+
+    var lastLink = posts[posts.length - 1].permlink;
+    var lastAuthor = posts[posts.length - 1].author;
+    var postsFinished = (posts.length < limit);
+
+    posts = removeDuplicates(guid, posts, TRENDING_TAG_SIZE);
+
+    async.until(
+      function () {
+        return posts.length == TRENDING_TAG_SIZE || postsFinished
+      },
+      function (next) {
+        loadMorePosts(media, method, lastAuthor, lastLink, guid, tag, (TRENDING_TAG_SIZE - posts.length), function (err, morePosts) {
+          posts = posts.concat(morePosts.posts);
+          postsFinished = morePosts.finished;
+          lastLink = morePosts.lastLink;
+          lastAuthor = morePosts.lastAuthor;
+          next();
+        });
+      },
+      function () {
+        preparePosts(media, false, posts, callback);
+      });
+
+  });
+}
+
+function loadMorePosts(media, method, author, permlink, guid, tag, limit, callback) {
+  console.log('Loading some MORE, starting from: ' + author + ', ' + permlink);
+  //TODO need to think about limit size
+  steem[media].call(method, [{
+    tag: tag,
+    limit: 2 * limit + 1,
+    start_author: author,
+    start_permlink: permlink
+  }], function (err, posts) {
+    if (err) {
+      log.error("Something went wrong with", media, err);
+      loadMorePosts(media, method, author, permlink, guid, tag, limit, callback);
+      return
+    }
+
+    var finished = (posts.length < 2 * limit + 1);
+    var lastLink = posts[posts.length - 1].permlink;
+    var lastAuthor = posts[posts.length - 1].author;
+
+    posts = removeDuplicates(guid, posts, limit);
+
+    callback(null, {posts: posts, finished: finished, lastAuthor:lastAuthor, lastLink:lastLink});
+
+  });
+}
+
+function getRecent(media, tag, limit, callback) {
+  var start = moment();
+  steem[media].call('get_discussions_by_created', [{
+    tag: tag,
+    limit: limit
+  }], function (err, posts) {
+    if (err) {
+      log.error("Something went wrong with", media, err);
+      getRecent(media, tag, limit, callback);
+      return;
+    }
+    log.info('Loading recent ' + tag + ' takes ' + moment().diff(start, 'milliseconds') + ' millis');
     preparePosts(media, true, posts, callback);
   });
 }
 
+
 module.exports.getTrending = getTrending;
 module.exports.getRecent = getRecent;
+module.exports.deleteCache = deleteCache;

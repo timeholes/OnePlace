@@ -55,10 +55,10 @@
     LICENSE: 'Код распространяется по лицензии MIT.'
   };
 
-  angular.module('oneplace', ['ui.router', 'pascalprecht.translate', 'ngCookies', 'ngSanitize'])
+  angular.module('oneplace', ['ui.router', 'pascalprecht.translate', 'ngCookies', 'ngSanitize','angularUUID2'])
     .constant("TAGS", {
       steem: ["steemit", "life", "photography", "art", "bitcoin", "travel", "story", "money", "introduceyourself", "food", "blockchain",
-              "news", "philosophy", "science", "health", "funny", "nature", "politics", "music", "video"],
+              "news", "philosophy", "science", "funny", "health", "nature", "politics", "music", "video"],
       golos: ["ru--golos", "ru--zhiznx", "ru--fotografiya", "ru--iskusstvo", "ru--tvorchestvo", "ru--obrazovanie",
               "ru--blokcheijn", "ru--statistika", "ru--stikhi", "ru--otkrytyij-kod", "ru--znakomstvo", "ru--yekonomika",
               "ru--konkurs", "ru--puteshestviya", "ru--istoriya", "ru--programmirovanie", "ru--priklyucheniya", "ru--mysli",
