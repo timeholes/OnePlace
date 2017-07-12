@@ -5,6 +5,8 @@
     BLOCKCHAIN: 'Active blockchain:',
     CHOOSE_LANG: 'Choose interface language:',
     BY: 'by ',
+    IN: 'in',
+    BACK: 'Back',
     D1: 'yesterday',
     D2: ' days ago',
     D3: ' days ago',
@@ -31,6 +33,9 @@
   var translations_ru = {
     BLOCKCHAIN: 'Активный блокчейн:',
     CHOOSE_LANG: 'Изменить язык интерфейса:',
+    BY: '',
+    IN: 'в',
+    BACK: 'Назад',
     D1: 'вчера',
     D2: ' день назад',
     D3: ' дня назад',
@@ -43,7 +48,6 @@
     M2: ' минуту назад',
     M3: ' минуты назад',
     M4: ' минут назад',
-    BY: '',
     C1: ' ответ',
     C2: ' ответ',
     C3: ' ответа',
@@ -55,7 +59,7 @@
     LICENSE: 'Код распространяется по лицензии MIT.'
   };
 
-  angular.module('oneplace', ['ui.router', 'pascalprecht.translate', 'ngCookies', 'ngSanitize','angularUUID2'])
+  angular.module('oneplace', ['ui.router', 'pascalprecht.translate', 'ngCookies', 'ngSanitize', 'angularUUID2'])
     .constant("TAGS", {
       steem: ["steemit", "life", "photography", "art", "bitcoin", "travel", "story", "money", "introduceyourself", "food", "blockchain",
               "news", "philosophy", "science", "funny", "health", "nature", "politics", "music", "video"],
@@ -64,11 +68,23 @@
               "ru--konkurs", "ru--puteshestviya", "ru--istoriya", "ru--programmirovanie", "ru--priklyucheniya", "ru--mysli",
               "ru--priroda", "ru--nauka"]
     })
+    .filter('to_trusted', ['$sce', function($sce){
+        return function(text) {
+            return $sce.trustAsHtml(text);
+        };
+    }])
+    .filter('capitalize', function() {
+      return function(input) {
+        if (input.length)
+        input = input.toLowerCase();
+        return input.substring(0,1).toUpperCase()+input.substring(1);
+      }
+    })
     .config(config);
 
   config.$inject = ['$urlRouterProvider', '$stateProvider', '$translateProvider'];
 
-  function config($urlRouterProvider, $stateProvider, $translateProvider, $routeProvider) {
+  function config($urlRouterProvider, $stateProvider, $translateProvider) {
 
     // Routing config
 

@@ -19,7 +19,7 @@
       <nav class="sidebar__nav">\
         <ul class="sidebar__nav-list">\
           <li ng-repeat="item in items" ng-click="handleClick($event)">\
-            <a class="sidebar__nav-link" ng-href="#{{ item.name }}" ng-bind="item.name | golos" title="{{ item.name | golos }}"></a>\
+            <a class="sidebar__nav-link" ng-href="#{{ item.name }}" ng-bind="item.name | golos | capitalize" title="{{ item.name | golos | capitalize}}"></a>\
           </li>\
         </ul>\
       </nav>\

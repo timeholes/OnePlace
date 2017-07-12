@@ -17,8 +17,6 @@
     app.setLanguage = $translate.use;
     app.getLanguage = $translate.use;
 
-//    app.media = $cookies.get('media') ? $cookies.get('media') : 'golos';
-
     $rootScope.$on('chainSet', function (event, data) {
       app.media = $cookies.get('media');
     });

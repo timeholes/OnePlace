@@ -9,19 +9,24 @@
   <meta http-equiv="content-encoding" content="gzip" />
   <title>OnePlace</title>
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-  <link href="css/styles.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
   
   <script src="lib/jquery.min.js"></script>
   <script src="lib/jquery.nav.min.js"></script>
-  <script src="lib/angular-1.5.8/angular.min.js"></script>
+  <script src="lib/angular-1.5.8/angular.js"></script>
   <script src="lib/angular-1.5.8/angular-cookies.min.js"></script>
   <script src="lib/angular-1.5.8/angular-sanitize.min.js"></script>
+  <script src="lib/angular-1.5.8/angular-resource.min.js"></script>
+<!--
+  <script src="lib/angular-1.5.8/angular-animate.min.js"></script>
+  <script src="lib/angular-1.5.8/angular-touch.min.js"></script>
+-->
   <script src="lib/angular-ui-router.min.js"></script>
   <script src="lib/angular-translate-2.7.2/angular-translate.min.js"></script>
   <script src="lib/angular-translate-2.7.2/angular-translate-storage-cookie.min.js"></script>
   <script src="lib/angular-translate-2.7.2/angular-translate-loader-static-files.min.js"></script>
   <script src="lib/angular-uuid2.min.js"></script>
-<!--  <script src="lib/jquery.touchSwipe.min.js"></script>-->
+
 
   <!--scripts-->
   <script src="js/oneplace.module.js"></script>
@@ -32,6 +37,8 @@
   <script src="js/golos-tag.filter.js"></script>
   <script src="js/ungolos-tag.filter.js"></script>
   <script src="js/tag-block.directive.js"></script>
+  <script src="js/post-view.directive.js"></script>
+  <script src="js/replies-view.directive.js"></script>
   <script src="js/one-page-nav.js"></script>
   <script src="js/scripts.js"></script>
   <!--scripts end-->
@@ -41,7 +48,7 @@
   min scripts end-->
 </head>
 
-<body ng-app="oneplace">
+<body ng-app="oneplace" ng-class="{'modal-shown':$root.modalShown}">
   <!-- Wrapper -->
   <div class="wrapper" ng-controller="AppController as app">
     <!-- Header -->
@@ -67,7 +74,7 @@
     <footer class="footer">
       <div class="container footer__wrapper">
         <div class="footer__license">
-          <span translate="COPYRIGHT"></span><a href="{{app.link[app.media]}}/@oneplace.media" target="_blank">@oneplace.media</a><span>, 2017.</span>
+          <span translate="COPYRIGHT"></span><a href="{{app.link[app.media]}}/@oneplace" target="_blank">@oneplace</a><span>, 2017.</span>
           <br><span translate="LICENSE"></span>
         </div>
         <div class="footer__lang-switch">

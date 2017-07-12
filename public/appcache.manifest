@@ -9,7 +9,9 @@ CACHE:
 /lib/angular-1.5.8/angular-sanitize.min.js
 /lib/angular-ui-router.min.js
 /lib/angular-translate-2.7.2/angular-translate.min.js
-/lib/angular-translate-2.7.2/angular-translate-storage-cookie.min.js /lib/angular-translate-2.7.2/angular-translate-loader-static-files.min.js
+/lib/angular-translate-2.7.2/angular-translate-storage-cookie.min.js
+/lib/angular-translate-2.7.2/angular-translate-loader-static-files.min.js
+/lib/angular-uuid2.min.js
 /js/all.min.js
 /img/favicon.ico
 /img/logo.svg

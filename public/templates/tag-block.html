@@ -1,28 +1,28 @@
 <section class="tag-block__body">
   <div class="container">
-   <p ng-show="tag.no_posts" translate="NO_POSTS"></p>
+   <p ng-show="tag.no_posts" class="tag-block__info" translate="NO_POSTS"></p>
     <section class="tag-block__trending">
       <article ng-class="{'tag-block__primary-post':$index == 0, 
                 'tag-block__secondary-post': $index != 0}" class="tag-block__post" ng-repeat="post in tag.posts">
         <a ng-class="{'tag-block__primary-post-image':$index == 0, 
-                'tag-block__secondary-post-image': $index != 0}" class="tag-block__post-image" style="background:url('{{post.image}}') 50% 0% no-repeat transparent;" target="_blank" href="{{post.url}}">
+                'tag-block__secondary-post-image': $index != 0}" class="tag-block__post-image" style="background:url('{{post.image}}') 50% 0% no-repeat transparent;" target="_blank" ng-click="openModal({event: $event,post: post})" ng-href="{{post.url}}">
                   <img class="image--mobile" ng-src="{{post.image}}">
                   <div class="nsfw-image" ng-if="post.nsfw" translate="NSFW"></div>
                 </a>
         <div ng-class="{'tag-block__primary-post-info':$index == 0, 
                 'tag-block__secondary-post-info': $index != 0}">
           <h1 ng-class="{'h1':$index == 0, 'h2': $index != 0, 'tag-block__primary-post-heading':$index == 0, 
-                'tag-block__secondary-post-heading': $index != 0}"><span class="nsfw-warning" ng-if="post.nsfw" ng-bind="post.nsfw"></span><a target="_blank" href="{{post.url}}" ng-bind="post.title"></a></h1>
+                'tag-block__secondary-post-heading': $index != 0}"><span class="nsfw-warning" ng-if="post.nsfw" ng-bind="post.nsfw"></span><a target="_blank" ng-click="openModal({event: $event,post: post})" href="{{post.url}}" ng-bind="post.title"></a></h1>
           <p ng-class="{'tag-block__primary-post-text':$index == 0, 
                 'tag-block__secondary-post-text': $index != 0}" ng-if="post.preview">
-            <a target="_blank" href="{{post.url}}" ng-bind="post.preview"></a>
+            <a target="_blank" ng-click="openModal({event: $event,post: post})" href="{{post.url}}" ng-bind="post.preview"></a>
           </p>
           <div ng-class="{'tag-block__primary-post-other':$index == 0, 
                 'tag-block__secondary-post-other': $index != 0}" class="tag-block__post-other clearfix">
             <a target="_blank" href="{{post.author_url}}" class="tag-block__post-avatar" style="background-image: url('{{post.avatar}}');"></a>
             <div class="tag-block__post-data">
-              <span class="tag-block__post-value" ng-class="{'tag-block__post-value--declined':post.payout_declined}">{{post.payout}}</span>
-              <a target="_blank" href="{{post.url}}#comments" class="tag-block__post-replies"><span ng-if="$index != 0" class="tag-block__post-replies-icon"></span><span ng-bind="post.children"></span><span ng-if="$index == 0" translate="{{post.comments.suffix}}"></span></a>
+              <span class="tag-block__post-value" ng-class="{'payout-declined':post.payout_declined}">{{post.payout}}</span>
+              <a target="_blank" ng-click="openModal({event: $event,post: post})" href="{{post.url}}#comments" class="tag-block__post-replies"><span ng-if="$index != 0" class="tag-block__post-replies-icon"></span><span ng-bind="post.children"></span><span ng-if="$index == 0" translate="{{post.comments.suffix}}"></span></a>
             </div>
             <span translate="BY"></span>
             <a target="_blank" class="tag-block__post-author" href="{{post.author_url}}" ng-bind="post.author"></a>
@@ -39,7 +39,7 @@
         </header>
         <section class="tag-block__recent-body">
           <div class="tag-block__recent-post" ng-repeat="post in tag.recent_posts">
-            <h3 class="h3 tag-block__recent-post-heading"><span class="nsfw-warning nsfw-warning--recent" ng-if="post.nsfw" ng-bind="post.nsfw"></span><a target="_blank" href="{{post.url}}" ng-bind="post.title"></a></h3>
+            <h3 class="h3 tag-block__recent-post-heading"><span class="nsfw-warning nsfw-warning--recent" ng-if="post.nsfw" ng-bind="post.nsfw"></span><a target="_blank" ng-click="openModal({event: $event,post: post})" href="{{post.url}}" ng-bind="post.title"></a></h3>
             <div class="tag-block__post-other tag-block__recent-post-other"><span class="tag-block__post-time">{{post.posted.count}}<span translate="{{post.posted.period}}"></span></span> <span translate="BY"></span>
               <a target="_blank" href="{{post.author_url}}" class="tag-block__post-author" ng-bind="post.author"></a>
             </div>

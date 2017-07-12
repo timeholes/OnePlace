@@ -2,7 +2,8 @@
     .directive('tagBlock', function () {
       return {
         scope: {
-          tag: '=tag'
+          tag: '=tag',
+          openModal: '&'
         },
         templateUrl: 'templates/tag-block.html'
       };

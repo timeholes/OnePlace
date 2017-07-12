@@ -9,13 +9,17 @@
   <section class="main-content">
     <section ng-repeat="tag in ctrl.tags" class="tag-block" id="{{tag.name}}">
       <header class="tag-block__header container">
-        <h1 class="h1 tag-block__headline" ng-bind="(tag.name | golos )"></h1>
+        <h1 class="h1 tag-block__headline" ng-bind="(tag.name | golos | capitalize)"></h1>
       </header>
       <div ng-hide="tag.posts_loaded" class="tag-block__spinner">
         <div class="container"><img src="img/spinner.gif" style=""></div>
       </div>
-      <tag-block tag="tag"></tag-block>
+      <tag-block tag="tag" open-modal="ctrl.toggleModal(event,post)"></tag-block>
     </section>
   </section>
   <!-- /Main content -->
+  
+  <div class="post-view__spinner" ng-show="ctrl.postLoader"><img src="img/spinner-dark.gif" alt=""></div>
+  <post-view show="ctrl.modalShown" post="ctrl.postView" close-modal="ctrl.closeModal()"></post-view>
+  
 </div>

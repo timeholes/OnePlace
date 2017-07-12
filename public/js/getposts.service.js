@@ -4,11 +4,13 @@
   angular.module('oneplace')
     .service('GetPostsService', GetPostsService);
 
-  GetPostsService.$inject = ['$http'];
-
-  function GetPostsService($http) {
+  function GetPostsService() {
     var service = this;
 
+
+    
+    
+    
     function getSuffix(number) {
       if (number == 1) {
         return 1;
@@ -35,8 +37,8 @@
       var days = Math.floor(hours / 24);
 
       var timePeriod = {
-        count: "",
-        period: ""
+        count: 1,
+        period: "М1"
       };
 
       if (days > 1) {
@@ -62,7 +64,7 @@
         timePeriod.period = "M" + getSuffix(minutes);
         return timePeriod;
       }
-
+      
       return timePeriod;
     };
 

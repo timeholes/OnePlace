@@ -1,0 +1,42 @@
+<div ng-show='show' class="post-view">
+  <div class="post-view__overlay" ng-click="closeModal()">
+  <div class="post-view__post-wrapper" ng-click="$event.stopPropagation()">
+    <div class="post-view__top-bar">
+     <span class="post-view__back" translate="BACK" ng-click="closeModal()"></span>
+      <span class="post-view__close-post" ng-click='closeModal()'></span>
+    </div>
+    <div class="post-view__post">
+      <header class="post-view__post-heading">
+        <h1 class="h1 post-view__post-title" ng-bind='post.title'></h1>
+        <div class="post-view__post-info post-view__top-info">
+          <div class="post-view__post-avatar avatar" style="background-image: url('{{post.avatar}}');"></div>
+          <span class="post-view__post-author-tag"><a class="post-view__author-link" ng-href="{{post.author_url}}" target="_blank" ng-bind="post.author"></a> <span class="post-view__post-author-rep" ng-bind='post.author_rep'></span> <span translate="IN"></span> <span class="hashtag">#<span ng-bind="post.category"></span></span></span>
+          <span class="post-view__post-posted">{{post.posted.count}}<span translate="{{post.posted.period}}"></span></span>
+        </div>
+      </header>
+      <div class="post-view__post-body markdown" ng-bind-html="post.body | to_trusted"></div>
+      <div class="post-view__post-info post-view__bottom-info">
+        <ul class="post-view__tags-list">
+          <li class="post-view__tag" ng-repeat="tag in post.tags">{{tag}}</li>
+        </ul>
+        <div class="post-view__post-data">
+          <span class="post-view__post-value" ng-class="{'payout-declined':post.payout_declined}" ng-bind="post.payout"></span>
+          <span class="post-view__post-replies"><span class="post-view__post-replies-icon"></span><span ng-bind="post.children"></span></span>
+        </div>
+      </div>
+      <section class="post-view__author">
+        <div class="post-view__avatar-wrapper">
+          <div class="post-view__author-avatar avatar" style="background-image: url('{{post.avatar}}');"></div><span class="post-view__author-rep" ng-bind='post.author_rep'></span>
+        </div>
+        <div class="post-view__author-info">
+          <a class="post-view__author-link" ng-href="{{post.author_url}}" target="_blank" ng-bind="post.author_name"></a>
+          <p class="author-info" ng-bind="post.author_about"></p>
+        </div>
+      </section>
+      <section class="post-view__comments" ng-if='post.children'>
+        <div class="comments__spinner" ng-hide='post.replies_loaded'><img src="img/spinner.gif" alt=""></div>
+        <replies-view posts="post.replies"></replies-view>
+      </section>
+    </div>
+  </div></div>
+</div>
